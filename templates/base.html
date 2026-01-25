@@ -2,44 +2,17 @@
 <html lang="bg">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{% block title %}Trips Monitoring{% endblock %}</title>
+    <title>{% block title %}Logbook{% endblock %}</title>
 </head>
 <body>
-<header>
-    <nav>
-        <a href="{% url 'home' %}">Home</a>
-        <a href="{% url 'dashboard' %}">Dashboard</a>
 
-        {% if request.user.is_authenticated %}
-            <a href="{% url 'car-list' %}">My Cars</a> 
-            <a href="{% url 'trip-list' %}">Trips</a>
-            <a href="{% url 'refuel-list' %}">Refuels</a>
-             
-
-            <span>Hi, {{ request.user.username }}!</span>
-            <a href="{% url 'logout' %}">Logout</a>
-        {% else %}
-            <a href="{% url 'register' %}">Register</a>
-            <a href="{% url 'login' %}">Login</a>
-        {% endif %}
-    </nav>
-</header>
+{% include "partials/_nav.html" %}
 
 <main>
-    {% if messages %}
-        <ul>
-            {% for message in messages %}
-                <li>{{ message }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
-
     {% block content %}{% endblock %}
 </main>
 
-<footer>
-    <p>Trips Monitoring © {{ now|date:"Y" }}</p>
-</footer>
+{% include "partials/_footer.html" %}
+
 </body>
 </html>

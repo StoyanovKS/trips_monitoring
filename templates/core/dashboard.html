@@ -1,7 +1,12 @@
 {% extends "base.html" %}
 {% block title %}Dashboard{% endblock %}
-
 {% block content %}
 <h1>Dashboard</h1>
-<p>Private page (only for logged-in users).</p>
+<p>Welcome, {{ request.user.username }}</p>
+
+<ul>
+    <li><a href="{% url 'car-list' %}">My Cars</a></li>
+    <li><a href="{% url 'trip-list' %}">My Trips</a></li>
+    <li><a href="{% url 'refuel-list' %}">My Refuels</a></li>
+</ul>
 {% endblock %}
