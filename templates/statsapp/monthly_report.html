@@ -1,5 +1,76 @@
 {% extends "base.html" %}
-{% block title %}Monthly report{% endblock %}
+{% load core_tags %}
+
+{% block title %}Monthly Report{% endblock %}
+
 {% block content %}
 <h1>Monthly report</h1>
+
+<form method="get">
+    <label>Year:
+        <input type="number" name="year" value="{{ year }}" min="2000" max="2100">
+    </label>
+
+    <label>Month:
+        <input type="number" name="month" value="{{ month }}" min="1" max="12">
+    </label>
+
+    <label>Car:
+        <select name="car">
+            <option value="">All cars</option>
+            {% for car in cars %}
+                <option value="{{ car.id }}"
+                    {% if selected_car and selected_car.id == car.id %}selected{% endif %}>
+                    {{ car }}
+                </option>
+            {% endfor %}
+        </select>
+    </label>
+
+    <button type="submit">Filter</button>
+</form>
+
+<hr>
+
+{% if stats %}
+<table border="1" cellpadding="6">
+    <thead>
+        <tr>
+            <th>Car</th>
+            <th>Trips</th>
+            <th>Distance (km)</th>
+            <th>Refuels</th>
+            <th>Fuel liters</th>
+            <th>Fuel cost</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for s in stats %}
+        <tr>
+            <td>{{ s.car }}</td>
+            <td>{{ s.trips_count }}</td>
+            <td>{{ s.total_distance_km }}</td>
+            <td>{{ s.refuels_count }}</td>
+            <td>{{ s.total_fuel_liters }}</td>
+            <td>{{ s.total_fuel_cost|bgn }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+
+    <tfoot>
+        <tr>
+            <th>Total</th>
+            <th>{{ totals.trips_count }}</th>
+            <th>{{ totals.total_distance_km }}</th>
+            <th>{{ totals.refuels_count }}</th>
+            <th>{{ totals.total_fuel_liters }}</th>
+            <th>{{ totals.total_fuel_cost|bgn }}</th>
+        </tr>
+    </tfoot>
+</table>
+{% else %}
+<p>No monthly stats found for {{ year }}-{{ month }}.</p>
+<p>Tip: create trips/refuels and run the Celery task to recalculate.</p>
+{% endif %}
+
 {% endblock %}
