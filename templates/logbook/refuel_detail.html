@@ -1,4 +1,6 @@
+{% load core_tags %}
 {% extends "base.html" %}
+
 {% block title %}Refuel{% endblock %}
 
 {% block content %}
@@ -8,19 +10,20 @@
 <p><strong>Date:</strong> {{ refuel.date }}</p>
 <p><strong>Odometer:</strong> {{ refuel.odometer }}</p>
 <p><strong>Liters:</strong> {{ refuel.liters }}</p>
-<p><strong>Total cost:</strong> {{ refuel.total_cost }}</p>
+
+<p><strong>Total cost:</strong> {{ refuel.total_cost|bgn }}</p>
 
 {% if refuel.fuel_type %}
-<p><strong>Fuel type:</strong> {{ refuel.fuel_type }}</p>
+    <p><strong>Fuel type:</strong> {{ refuel.fuel_type }}</p>
 {% endif %}
 
 {% if refuel.station %}
-<p><strong>Station:</strong> {{ refuel.station }}</p>
+    <p><strong>Station:</strong> {{ refuel.station }}</p>
 {% endif %}
 
 <p>
-  <a href="{% url 'refuel-edit' refuel.pk %}">Edit</a> |
-  <a href="{% url 'refuel-delete' refuel.pk %}">Delete</a>
+    <a href="{% url 'refuel-edit' refuel.pk %}">Edit</a> |
+    <a href="{% url 'refuel-delete' refuel.pk %}">Delete</a>
 </p>
 
 <p><a href="{% url 'refuel-list' %}">Back to refuels</a></p>

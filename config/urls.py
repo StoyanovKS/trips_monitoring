@@ -22,9 +22,11 @@ from django.urls import path, include
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("accounts/", include("accounts.urls")),
-    path("", include("core.urls")),  # home/dashboard ще са там
+    path("", include("core.urls")),  #
     path("", include("garage.urls")),
     path("", include("logbook.urls")),
+    path("", include("statsapp.urls")),
+    path("api/", include("api.urls")),
 ]
 
 if settings.DEBUG:
