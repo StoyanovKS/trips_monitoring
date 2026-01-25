@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Trip{% endblock %}
+
+{% block content %}
+<h1>Trip</h1>
+
+<p><strong>Car:</strong> {{ trip.car }}</p>
+<p><strong>Route:</strong> {{ trip.from_city }} → {{ trip.to_city }}</p>
+<p><strong>Dates:</strong> {{ trip.start_date }} → {{ trip.end_date }}</p>
+<p><strong>Odometer:</strong> {{ trip.start_odometer }} → {{ trip.end_odometer }}</p>
+<p><strong>Distance:</strong> {{ trip.distance_km }} km</p>
+
+{% if trip.tags.all %}
+<p><strong>Tags:</strong>
+  {% for tag in trip.tags.all %} {{ tag }}{% if not forloop.last %}, {% endif %}{% endfor %}
+</p>
+{% endif %}
+
+{% if trip.notes %}
+<p><strong>Notes:</strong> {{ trip.notes }}</p>
+{% endif %}
+
+<p>
+  <a href="{% url 'trip-edit' trip.pk %}">Edit</a> |
+  <a href="{% url 'trip-delete' trip.pk %}">Delete</a>
+</p>
+
+<p><a href="{% url 'trip-list' %}">Back to trips</a></p>
+{% endblock %}

@@ -1,0 +1,28 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.exceptions import PermissionDenied
+
+
+class OwnerQuerySetMixin(LoginRequiredMixin):
+    """
+    Filters queryset by owner=request.user.
+    Works for models that have 'owner' FK.
+    """
+
+    owner_field = "owner"  # can be overridden
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        return qs.filter(**{self.owner_field: self.request.user})
+
+
+class CreatedByQuerySetMixin(LoginRequiredMixin):
+    """
+    Filters queryset by created_by=request.user.
+    Works for models that have 'created_by' FK.
+    """
+
+    created_by_field = "created_by"
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        return qs.filter(**{self.created_by_field: self.request.user})

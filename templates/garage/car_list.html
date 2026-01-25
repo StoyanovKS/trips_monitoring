@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}My Cars{% endblock %}
+
+{% block content %}
+<h1>My Cars</h1>
+
+<p><a href="{% url 'car-create' %}">+ Add car</a></p>
+
+{% if cars %}
+    <ul>
+        {% for car in cars %}
+            <li>
+                <a href="{% url 'car-detail' car.pk %}">
+                    {{ car.brand }} {{ car.model }} ({{ car.year }})
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No cars yet.</p>
+{% endif %}
+{% endblock %}

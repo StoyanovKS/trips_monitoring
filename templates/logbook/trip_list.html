@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Trips{% endblock %}
+
+{% block content %}
+<h1>Trips</h1>
+
+<p><a href="{% url 'trip-create' %}">+ Add trip</a></p>
+
+{% if trips %}
+<ul>
+  {% for trip in trips %}
+    <li>
+      <a href="{% url 'trip-detail' trip.pk %}">
+        {{ trip.car }} | {{ trip.from_city }} → {{ trip.to_city }} ({{ trip.start_date }})
+      </a>
+      — {{ trip.distance_km }} km
+    </li>
+  {% endfor %}
+</ul>
+{% else %}
+<p>No trips yet.</p>
+{% endif %}
+{% endblock %}

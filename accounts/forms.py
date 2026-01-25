@@ -45,3 +45,21 @@ class LoginForm(AuthenticationForm):
         label="Парола",
         widget=forms.PasswordInput(attrs={"placeholder": "Парола"}),
     )
+
+class ProfileEditForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ("email", "preferred_currency", "timezone")
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields["email"].label = "Имейл"
+        self.fields["preferred_currency"].label = "Валута"
+        self.fields["timezone"].label = "Часова зона"
+
+        self.fields["email"].widget.attrs.update({"placeholder": "email"})
+        self.fields["timezone"].widget.attrs.update({"placeholder": "Europe/Sofia"})
+
+        # Disabled/read-only requirement #1
+        self.fields["email"].disabled = True

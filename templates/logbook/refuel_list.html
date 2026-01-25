@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Refuels{% endblock %}
+
+{% block content %}
+<h1>Refuels</h1>
+
+<p><a href="{% url 'refuel-create' %}">+ Add refuel</a></p>
+
+{% if refuels %}
+<ul>
+  {% for r in refuels %}
+    <li>
+      <a href="{% url 'refuel-detail' r.pk %}">
+        {{ r.car }} | {{ r.date }} | {{ r.liters }} L | {{ r.total_cost }}
+      </a>
+    </li>
+  {% endfor %}
+</ul>
+{% else %}
+<p>No refuels yet.</p>
+{% endif %}
+{% endblock %}

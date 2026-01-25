@@ -23,6 +23,8 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("accounts/", include("accounts.urls")),
     path("", include("core.urls")),  # home/dashboard ще са там
+    path("", include("garage.urls")),
+    path("", include("logbook.urls")),
 ]
 
 if settings.DEBUG:
