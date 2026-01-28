@@ -1,49 +1,57 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.views.generic import (
+    ListView, DetailView, CreateView, UpdateView, DeleteView
+)
 
-from garage.models import Car
 from .models import Trip, Refuel
-from .forms import TripCreateForm, TripEditForm, RefuelCreateForm
+from .forms import (
+    TripCreateForm, TripEditForm,
+    RefuelCreateForm, RefuelEditForm,
+)
 
 
 # -------------------------
 # Trips
 # -------------------------
 
-class TripListView(ListView):
+class TripListView(LoginRequiredMixin, ListView):
     model = Trip
     template_name = "logbook/trip_list.html"
     context_object_name = "trips"
 
     def get_queryset(self):
         return (
-            Trip.objects.select_related("car")
+            super()
+            .get_queryset()
+            .select_related("car", "created_by")
+            .prefetch_related("tags")
             .filter(car__owner=self.request.user)
-            .order_by("-start_date", "-created_at")
         )
 
 
-class TripDetailView(DetailView):
+class TripDetailView(LoginRequiredMixin, DetailView):
     model = Trip
     template_name = "logbook/trip_detail.html"
     context_object_name = "trip"
 
     def get_queryset(self):
-        return Trip.objects.select_related("car").filter(car__owner=self.request.user)
+        return (
+            super()
+            .get_queryset()
+            .select_related("car", "created_by")
+            .prefetch_related("tags")
+            .filter(car__owner=self.request.user)
+        )
 
 
-class TripCreateView(CreateView):
+class TripCreateView(LoginRequiredMixin, CreateView):
     model = Trip
     form_class = TripCreateForm
     template_name = "logbook/trip_form.html"
 
-    def get_form(self, form_class=None):
-        form = super().get_form(form_class)
-        # show only user's cars
-        form.fields["car"].queryset = Car.objects.filter(owner=self.request.user).order_by("brand", "model", "year")
-        return form
-
     def form_valid(self, form):
+        # ensure created_by is set
         form.instance.created_by = self.request.user
         return super().form_valid(form)
 
@@ -51,72 +59,65 @@ class TripCreateView(CreateView):
         return reverse_lazy("trip-detail", kwargs={"pk": self.object.pk})
 
 
-class TripUpdateView(UpdateView):
+class TripUpdateView(LoginRequiredMixin, UpdateView):
     model = Trip
     form_class = TripEditForm
     template_name = "logbook/trip_form.html"
 
     def get_queryset(self):
-        return Trip.objects.filter(car__owner=self.request.user)
-
-    def get_form(self, form_class=None):
-        form = super().get_form(form_class)
-        form.fields["car"].queryset = Car.objects.filter(owner=self.request.user).order_by("brand", "model", "year")
-        return form
+        # protect: only owner can edit
+        return super().get_queryset().filter(car__owner=self.request.user)
 
     def get_success_url(self):
         return reverse_lazy("trip-detail", kwargs={"pk": self.object.pk})
 
 
-class TripDeleteView(DeleteView):
+class TripDeleteView(LoginRequiredMixin, DeleteView):
     model = Trip
     template_name = "logbook/trip_confirm_delete.html"
     success_url = reverse_lazy("trip-list")
 
     def get_queryset(self):
-        return Trip.objects.filter(car__owner=self.request.user)
+        # protect: only owner can delete
+        return super().get_queryset().filter(car__owner=self.request.user)
 
 
 # -------------------------
 # Refuels
 # -------------------------
 
-class RefuelListView(ListView):
+class RefuelListView(LoginRequiredMixin, ListView):
     model = Refuel
     template_name = "logbook/refuel_list.html"
     context_object_name = "refuels"
 
     def get_queryset(self):
         return (
-            Refuel.objects.select_related("car")
+            super()
+            .get_queryset()
+            .select_related("car", "created_by")
             .filter(car__owner=self.request.user)
-            .order_by("-date", "-created_at")
         )
 
 
-class RefuelDetailView(DetailView):
+class RefuelDetailView(LoginRequiredMixin, DetailView):
     model = Refuel
     template_name = "logbook/refuel_detail.html"
     context_object_name = "refuel"
 
     def get_queryset(self):
-        return Refuel.objects.select_related("car").filter(car__owner=self.request.user)
+        return (
+            super()
+            .get_queryset()
+            .select_related("car", "created_by")
+            .filter(car__owner=self.request.user)
+        )
 
 
-class RefuelCreateView(CreateView):
+class RefuelCreateView(LoginRequiredMixin, CreateView):
     model = Refuel
     form_class = RefuelCreateForm
     template_name = "logbook/refuel_form.html"
-
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs["user"] = self.request.user  # if you want user-based validation later
-        return kwargs
-
-    def get_form(self, form_class=None):
-        form = super().get_form(form_class)
-        form.fields["car"].queryset = Car.objects.filter(owner=self.request.user).order_by("brand", "model", "year")
-        return form
 
     def form_valid(self, form):
         form.instance.created_by = self.request.user
@@ -126,32 +127,22 @@ class RefuelCreateView(CreateView):
         return reverse_lazy("refuel-detail", kwargs={"pk": self.object.pk})
 
 
-class RefuelUpdateView(UpdateView):
+class RefuelUpdateView(LoginRequiredMixin, UpdateView):
     model = Refuel
-    form_class = RefuelCreateForm
+    form_class = RefuelEditForm
     template_name = "logbook/refuel_form.html"
 
     def get_queryset(self):
-        return Refuel.objects.filter(car__owner=self.request.user)
-
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs["user"] = self.request.user
-        return kwargs
-
-    def get_form(self, form_class=None):
-        form = super().get_form(form_class)
-        form.fields["car"].queryset = Car.objects.filter(owner=self.request.user).order_by("brand", "model", "year")
-        return form
+        return super().get_queryset().filter(car__owner=self.request.user)
 
     def get_success_url(self):
         return reverse_lazy("refuel-detail", kwargs={"pk": self.object.pk})
 
 
-class RefuelDeleteView(DeleteView):
+class RefuelDeleteView(LoginRequiredMixin, DeleteView):
     model = Refuel
     template_name = "logbook/refuel_confirm_delete.html"
     success_url = reverse_lazy("refuel-list")
 
     def get_queryset(self):
-        return Refuel.objects.filter(car__owner=self.request.user)
+        return super().get_queryset().filter(car__owner=self.request.user)

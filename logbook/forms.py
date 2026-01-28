@@ -148,3 +148,8 @@ class TagCreateForm(forms.ModelForm):
         if len(name) < 2:
             raise ValidationError("Тагът трябва да е поне 2 символа.")
         return name
+    
+class RefuelEditForm(forms.ModelForm):
+    class Meta:
+        model = Refuel
+        fields = ("car", "date", "odometer", "liters", "total_cost", "fuel_type", "station")
