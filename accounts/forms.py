@@ -16,34 +16,32 @@ class RegisterForm(UserCreationForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.fields["username"].label = "Потребителско име"
-        self.fields["email"].label = "Имейл"
+        self.fields["username"].label = "User Name"
+        self.fields["email"].label = "Email"
 
-        self.fields["username"].widget.attrs.update({"placeholder": "напр. krasen123"})
-        self.fields["email"].widget.attrs.update({"placeholder": "name@example.com"})
-        self.fields["preferred_currency"].label = "Валута"
-        self.fields["timezone"].label = "Часова зона"
+        self.fields["username"].widget.attrs.update({"placeholder": "username_@!1"})
+        self.fields["email"].widget.attrs.update({"placeholder": "put_your_name@example.com"})
+        self.fields["preferred_currency"].label = "Currency"
+        self.fields["timezone"].label = "Timezone"
 
         # По-приятни текстове за пароли
-        self.fields["password1"].label = "Парола"
-        self.fields["password2"].label = "Повтори паролата"
+        self.fields["password1"].label = "Enter your Password"
+        self.fields["password2"].label = "Please repeat your password"
         self.fields["password1"].help_text = ""
         self.fields["password2"].help_text = ""
 
-        self.error_messages["password_mismatch"] = "Паролите не съвпадат."
+        self.error_messages["password_mismatch"] = "Passwords do not match!"
 
 
 class LoginForm(AuthenticationForm):
-    """
-    Не е задължително, но е удобно за placeholders и по-хубави messages.
-    """
+    
     username = forms.CharField(
-        label="Потребителско име",
-        widget=forms.TextInput(attrs={"placeholder": "Потребителско име"}),
+        label="User name",
+        widget=forms.TextInput(attrs={"placeholder": "User name"}),
     )
     password = forms.CharField(
-        label="Парола",
-        widget=forms.PasswordInput(attrs={"placeholder": "Парола"}),
+        label="Password",
+        widget=forms.PasswordInput(attrs={"placeholder": "Password"}),
     )
 
 class ProfileEditForm(forms.ModelForm):
@@ -54,9 +52,9 @@ class ProfileEditForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.fields["email"].label = "Имейл"
-        self.fields["preferred_currency"].label = "Валута"
-        self.fields["timezone"].label = "Часова зона"
+        self.fields["email"].label = "Email"
+        self.fields["preferred_currency"].label = "Currency"
+        self.fields["timezone"].label = "Timezone"
 
         self.fields["email"].widget.attrs.update({"placeholder": "email"})
         self.fields["timezone"].widget.attrs.update({"placeholder": "Europe/Sofia"})
