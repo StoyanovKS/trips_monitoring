@@ -1,9 +1,14 @@
 from .base import *
 
+import os
+
+
+
 DEBUG = False
+SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]
 
-ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS', '').split(',')
-
+ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "").split(",")
+CSRF_TRUSTED_ORIGINS = os.environ.get("CSRF_TRUSTED_ORIGINS", "").split(",")
 
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
