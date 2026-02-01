@@ -6,9 +6,6 @@ User = get_user_model()
 
 
 class RegisterForm(UserCreationForm):
-    """
-    Регистрация с user-friendly labels + placeholders.
-    """
     class Meta(UserCreationForm.Meta):
         model = User
         fields = ("username", "email", "preferred_currency", "timezone")

@@ -17,7 +17,4 @@ class UserLoginView(LoginView):
 
 
 class UserLogoutView(LogoutView):
-    """
-    LogoutView ще редиректне към LOGOUT_REDIRECT_URL от settings.
-    """
     pass

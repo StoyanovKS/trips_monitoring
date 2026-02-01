@@ -56,7 +56,7 @@ class Car(models.Model):
         null=True,
     )
 
-    # Second M2M to Tag lives here, Tag model is in logbook app
+    
     tags = models.ManyToManyField(
         "logbook.Tag",
         blank=True,

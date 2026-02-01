@@ -23,12 +23,12 @@ class TripCreateForm(forms.ModelForm):
         self.fields["notes"].label = "notes"
         self.fields["tags"].label = "tags"
 
-        self.fields["from_city"].widget.attrs.update({"placeholder": "напр. София"})
-        self.fields["to_city"].widget.attrs.update({"placeholder": "напр. Плевен"})
-        self.fields["notes"].widget.attrs.update({"placeholder": "по желание..."})
+        self.fields["from_city"].widget.attrs.update({"placeholder": "ex: Sofia"})
+        self.fields["to_city"].widget.attrs.update({"placeholder": "ex: Plovdiv"})
+        self.fields["notes"].widget.attrs.update({"placeholder": "not mandatory"})
 
         self.error_messages = {
-            "invalid": "Невалидни данни. Провери полетата.",
+            "invalid": "Data invalid.",
         }
 
     def clean(self):
@@ -41,11 +41,11 @@ class TripCreateForm(forms.ModelForm):
 
         
         if start_odo is not None and end_odo is not None and end_odo < start_odo:
-            self.add_error("end_odometer", "Крайният километраж не може да е по-малък от началния.")
+            self.add_error("end_odometer", "the final odometer must be higher than the initial one.")
 
         
         if start_date and end_date and end_date < start_date:
-            self.add_error("end_date", "Крайната дата не може да е преди началната.")
+            self.add_error("end_date", "the end date shall be after the start date.")
 
         return cleaned
 

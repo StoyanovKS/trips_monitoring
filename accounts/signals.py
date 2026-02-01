@@ -13,17 +13,14 @@ def create_groups_and_permissions(sender, **kwargs):
     - Groups are created if missing
     - Permissions are added if missing
     """
-    # Ensure we run this only once for our app (optional, but prevents noise)
+    
     if sender.name != "accounts":
         return
 
     drivers_group, _ = Group.objects.get_or_create(name="Drivers")
     managers_group, _ = Group.objects.get_or_create(name="Managers")
 
-    # Permission rules:
-    # - Drivers: can add/change Trip & Refuel
-    # - Managers: can add/change/delete Trip & Refuel, and manage Cars
-    # (You can adjust later, but this is clearly different)
+    
 
     permission_map = {
         "Drivers": [
@@ -58,7 +55,6 @@ def create_groups_and_permissions(sender, **kwargs):
                         codename=codename,
                     )
                 except Permission.DoesNotExist:
-                    # If permissions don't exist yet (model not migrated), skip safely
                     continue
 
                 group.permissions.add(perm)
