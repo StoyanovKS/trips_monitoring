@@ -7,7 +7,6 @@ class IsOwnerOrManager(BasePermission):
         return bool(request.user and request.user.is_authenticated)
 
     def has_object_permission(self, request, view, obj):
-        # obj is expected to be a Car instance
         user = request.user
         if user.groups.filter(name="Managers").exists():
             return True
