@@ -1,9 +1,13 @@
+from decimal import Decimal
+
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Sum, Count, F
+from django.db.models.functions import Coalesce
 from django.utils import timezone
 from django.views.generic import TemplateView
 
 from garage.models import Car
-from .models import MonthlyCarStat
+from logbook.models import Trip, Refuel
 
 
 class MonthlyReportView(LoginRequiredMixin, TemplateView):
@@ -12,52 +16,104 @@ class MonthlyReportView(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        # current month by default
         today = timezone.localdate()
         year = int(self.request.GET.get("year", today.year))
         month = int(self.request.GET.get("month", today.month))
 
         cars = Car.objects.filter(owner=self.request.user).order_by("brand", "model", "year")
 
-        # optional car filter (?car=ID)
         car_id = self.request.GET.get("car")
-        stats_qs = MonthlyCarStat.objects.filter(
-            car__owner=self.request.user,
-            year=year,
-            month=month,
-        ).select_related("car")
-
         selected_car = None
         if car_id:
             try:
                 car_id_int = int(car_id)
                 selected_car = cars.filter(id=car_id_int).first()
-                if selected_car:
-                    stats_qs = stats_qs.filter(car_id=car_id_int)
             except ValueError:
-                pass
+                selected_car = None
 
-        # totals for summary row
+        # Base querysets for the selected month
+        trips_qs = Trip.objects.filter(
+            car__owner=self.request.user,
+            start_date__year=year,
+            start_date__month=month,
+        )
+
+        refuels_qs = Refuel.objects.filter(
+            car__owner=self.request.user,
+            date__year=year,
+            date__month=month,
+        )
+
+        if selected_car:
+            trips_qs = trips_qs.filter(car=selected_car)
+            refuels_qs = refuels_qs.filter(car=selected_car)
+
+        # Per-car aggregation for table
+        # Distance uses (end_odometer - start_odometer) sum
+        trips_by_car = (
+            trips_qs.values("car_id", "car__brand", "car__model", "car__year")
+            .annotate(
+                trips_count=Count("id"),
+                total_distance_km=Coalesce(Sum(F("end_odometer") - F("start_odometer")), 0),
+            )
+        )
+
+        refuels_by_car = (
+            refuels_qs.values("car_id")
+            .annotate(
+                refuels_count=Count("id"),
+                total_fuel_liters=Coalesce(Sum("liters"), Decimal("0")),
+                total_fuel_cost=Coalesce(Sum("total_cost"), Decimal("0")),
+            )
+        )
+
+        refuels_map = {r["car_id"]: r for r in refuels_by_car}
+
+        stats = []
+        for t in trips_by_car:
+            car_id_val = t["car_id"]
+            r = refuels_map.get(car_id_val, {})
+            stats.append({
+                "car_id": car_id_val,
+                "car_label": f'{t["car__brand"]} {t["car__model"]} ({t["car__year"]})',
+                "trips_count": t["trips_count"],
+                "total_distance_km": t["total_distance_km"],
+                "refuels_count": r.get("refuels_count", 0),
+                "total_fuel_liters": r.get("total_fuel_liters", Decimal("0")),
+                "total_fuel_cost": r.get("total_fuel_cost", Decimal("0")),
+            })
+
+        # If a car has refuels but no trips, include it too
+        trip_car_ids = {t["car_id"] for t in trips_by_car}
+        for r in refuels_by_car:
+            if r["car_id"] not in trip_car_ids:
+                car_obj = cars.filter(id=r["car_id"]).first()
+                if car_obj:
+                    stats.append({
+                        "car_id": r["car_id"],
+                        "car_label": f"{car_obj.brand} {car_obj.model} ({car_obj.year})",
+                        "trips_count": 0,
+                        "total_distance_km": 0,
+                        "refuels_count": r["refuels_count"],
+                        "total_fuel_liters": r["total_fuel_liters"],
+                        "total_fuel_cost": r["total_fuel_cost"],
+                    })
+
+        # Totals
         totals = {
-            "trips_count": 0,
-            "total_distance_km": 0,
-            "refuels_count": 0,
-            "total_fuel_liters": 0,
-            "total_fuel_cost": 0,
+            "trips_count": sum(s["trips_count"] for s in stats),
+            "total_distance_km": sum(int(s["total_distance_km"]) for s in stats),
+            "refuels_count": sum(s["refuels_count"] for s in stats),
+            "total_fuel_liters": sum(Decimal(s["total_fuel_liters"]) for s in stats),
+            "total_fuel_cost": sum(Decimal(s["total_fuel_cost"]) for s in stats),
         }
-        for s in stats_qs:
-            totals["trips_count"] += s.trips_count
-            totals["total_distance_km"] += s.total_distance_km
-            totals["refuels_count"] += s.refuels_count
-            totals["total_fuel_liters"] += float(s.total_fuel_liters)
-            totals["total_fuel_cost"] += float(s.total_fuel_cost)
 
         context.update({
             "cars": cars,
             "selected_car": selected_car,
             "year": year,
             "month": month,
-            "stats": stats_qs,
+            "stats": stats,     # <- вече е list от dict
             "totals": totals,
         })
         return context
