@@ -5,16 +5,17 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %}Logbook{% endblock %}</title>
-
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
 </head>
 <body>
 
 {% include "partials/_nav.html" %}
 
-<main>
-    {% block content %}{% endblock %}
-</main>
+<div class="page-shell">
+    <main class="page-content">
+        {% block content %}{% endblock %}
+    </main>
+</div>
 
 {% include "partials/_footer.html" %}
 

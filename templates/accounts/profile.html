@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+<div class="page-card">
+    <h1>Profile</h1>
+
+    <p><strong>Username:</strong> {{ request.user.username }}</p>
+    <p><strong>Email:</strong> {{ request.user.email|default:"-" }}</p>
+    <p><strong>Preferred currency:</strong> {{ request.user.preferred_currency }}</p>
+    <p><strong>Timezone:</strong> {{ request.user.timezone }}</p>
+
+    <p style="margin-top: 14px;">
+        <a href="{% url 'profile_edit' %}">Edit profile</a> |
+        <a href="{% url 'password_change' %}">Change password</a>
+    </p>
+</div>
+{% endblock %}
