@@ -1,8 +1,8 @@
 :root {
-    --footer-h: 56px;   /* реалната височина на футъра */
+    --footer-h: 56px;   
 }
 
-/* Base reset */
+
 * { box-sizing: border-box; }
 
 html, body {
@@ -13,14 +13,12 @@ html, body {
 body {
     font-family: Arial, sans-serif;
     background: #111;
-
-    /* page structure: nav + content + fixed footer */
     min-height: 100vh;
     display: flex;
     flex-direction: column;
 }
 
-/* NAV */
+
 nav {
     background: #222;
     padding: 10px 14px;
@@ -57,45 +55,36 @@ nav button {
     font-weight: 700;
 }
 
-/* CONTENT WRAPPER */
+
 .page-shell {
     flex: 1 1 auto;
-
-    /* важно: оставяме място за fixed футъра */
     padding-bottom: var(--footer-h);
-
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
-    background-color: #1b1b1b; /* fallback */
-
+    background-color: #1b1b1b; 
     display: flex;
     flex-direction: column;
 }
 
-/* overlay трябва да расте със съдържанието */
+
 .page-overlay {
     min-height: 100%;
-    /* МАХАМЕ height:100% защото реже дълги страници */
     background: rgba(0, 0, 0, 0.10);
-
     display: flex;
     flex-direction: column;
     flex: 1 1 auto;
 }
 
-/* main content */
+
 .page-content {
     flex: 1 1 auto;
     padding: 24px;
-
-    /* допълнителна защита: ако футърът е по-висок */
     padding-bottom: calc(var(--footer-h) + 16px);
-
-    color: #111; /* оставяш го черен, както реши */
+    color: #111; 
 }
 
-/* Tables */
+
 table {
     border-collapse: collapse;
     background: rgba(255, 255, 255, 0.95);
@@ -111,21 +100,18 @@ img {
     height: auto;
 }
 
-/* FOOTER */
+
 footer.site-footer {
     position: fixed;
     left: 0;
     right: 0;
     bottom: 0;
-
     background: #222;
     color: #fff;          
     text-align: center;
-
     padding: 10px 8px;
     font-weight: 700;
     z-index: 1000;
-
     min-height: var(--footer-h);
     display: flex;
     align-items: center;
@@ -134,4 +120,19 @@ footer.site-footer {
 
 footer.site-footer p {
     margin: 0;
+}
+
+.quick-link {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 10px;
+    background: rgba(0, 0, 0, 0.12);
+    text-decoration: none;
+    color: inherit;
+    font-weight: 700;
+}
+
+.quick-link:hover {
+    background: rgba(0, 0, 0, 0.20);
+    text-decoration: underline;
 }
