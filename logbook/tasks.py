@@ -44,7 +44,7 @@ def send_weekly_summary_email(user_id: int) -> bool:
     send_mail(
         subject=subject,
         message=message,
-        from_email=None,  # uses DEFAULT_FROM_EMAIL
+        from_email=None, 
         recipient_list=[user.email],
         fail_silently=True,
     )

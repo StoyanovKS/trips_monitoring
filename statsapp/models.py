@@ -4,7 +4,7 @@ from django.db import models
 class MonthlyCarStat(models.Model):
     car = models.ForeignKey("garage.Car", on_delete=models.CASCADE, related_name="monthly_stats")
     year = models.PositiveIntegerField()
-    month = models.PositiveIntegerField()  # 1..12
+    month = models.PositiveIntegerField() 
 
     trips_count = models.PositiveIntegerField(default=0)
     total_distance_km = models.PositiveIntegerField(default=0)

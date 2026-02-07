@@ -20,13 +20,10 @@ class RegisterForm(UserCreationForm):
         self.fields["email"].widget.attrs.update({"placeholder": "put_your_name@example.com"})
         self.fields["preferred_currency"].label = "Currency"
         self.fields["timezone"].label = "Timezone"
-
-        # По-приятни текстове за пароли
         self.fields["password1"].label = "Enter your Password"
         self.fields["password2"].label = "Please repeat your password"
         self.fields["password1"].help_text = ""
         self.fields["password2"].help_text = ""
-
         self.error_messages["password_mismatch"] = "Passwords do not match!"
 
 
@@ -48,13 +45,9 @@ class ProfileEditForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-
         self.fields["email"].label = "Email"
         self.fields["preferred_currency"].label = "Currency"
         self.fields["timezone"].label = "Timezone"
-
         self.fields["email"].widget.attrs.update({"placeholder": "email"})
         self.fields["timezone"].widget.attrs.update({"placeholder": "Europe/Sofia"})
-
-        # Disabled/read-only requirement #1
         self.fields["email"].disabled = True

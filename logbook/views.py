@@ -51,12 +51,16 @@ class TripCreateView(LoginRequiredMixin, CreateView):
     template_name = "logbook/trip_form.html"
 
     def form_valid(self, form):
-        # ensure created_by is set
         form.instance.created_by = self.request.user
         return super().form_valid(form)
 
     def get_success_url(self):
         return reverse_lazy("trip-detail", kwargs={"pk": self.object.pk})
+    
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["user"] = self.request.user
+        return kwargs
 
 
 class TripUpdateView(LoginRequiredMixin, UpdateView):
@@ -65,11 +69,15 @@ class TripUpdateView(LoginRequiredMixin, UpdateView):
     template_name = "logbook/trip_form.html"
 
     def get_queryset(self):
-        # protect: only owner can edit
         return super().get_queryset().filter(car__owner=self.request.user)
 
     def get_success_url(self):
         return reverse_lazy("trip-detail", kwargs={"pk": self.object.pk})
+    
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["user"] = self.request.user
+        return kwargs
 
 
 class TripDeleteView(LoginRequiredMixin, DeleteView):
@@ -78,7 +86,6 @@ class TripDeleteView(LoginRequiredMixin, DeleteView):
     success_url = reverse_lazy("trip-list")
 
     def get_queryset(self):
-        # protect: only owner can delete
         return super().get_queryset().filter(car__owner=self.request.user)
 
 
@@ -125,6 +132,11 @@ class RefuelCreateView(LoginRequiredMixin, CreateView):
 
     def get_success_url(self):
         return reverse_lazy("refuel-detail", kwargs={"pk": self.object.pk})
+    
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["user"] = self.request.user
+        return kwargs
 
 
 class RefuelUpdateView(LoginRequiredMixin, UpdateView):
@@ -137,6 +149,11 @@ class RefuelUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_success_url(self):
         return reverse_lazy("refuel-detail", kwargs={"pk": self.object.pk})
+    
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["user"] = self.request.user
+        return kwargs
 
 
 class RefuelDeleteView(LoginRequiredMixin, DeleteView):

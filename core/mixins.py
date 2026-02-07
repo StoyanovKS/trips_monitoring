@@ -3,12 +3,8 @@ from django.core.exceptions import PermissionDenied
 
 
 class OwnerQuerySetMixin(LoginRequiredMixin):
-    """
-    Filters queryset by owner=request.user.
-    Works for models that have 'owner' FK.
-    """
 
-    owner_field = "owner"  # can be overridden
+    owner_field = "owner" 
 
     def get_queryset(self):
         qs = super().get_queryset()

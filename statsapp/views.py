@@ -31,7 +31,7 @@ class MonthlyReportView(LoginRequiredMixin, TemplateView):
             except ValueError:
                 selected_car = None
 
-        # Base querysets for the selected month
+        
         trips_qs = Trip.objects.filter(
             car__owner=self.request.user,
             start_date__year=year,
@@ -48,8 +48,7 @@ class MonthlyReportView(LoginRequiredMixin, TemplateView):
             trips_qs = trips_qs.filter(car=selected_car)
             refuels_qs = refuels_qs.filter(car=selected_car)
 
-        # Per-car aggregation for table
-        # Distance uses (end_odometer - start_odometer) sum
+        
         trips_by_car = (
             trips_qs.values("car_id", "car__brand", "car__model", "car__year")
             .annotate(
@@ -83,7 +82,7 @@ class MonthlyReportView(LoginRequiredMixin, TemplateView):
                 "total_fuel_cost": r.get("total_fuel_cost", Decimal("0")),
             })
 
-        # If a car has refuels but no trips, include it too
+        
         trip_car_ids = {t["car_id"] for t in trips_by_car}
         for r in refuels_by_car:
             if r["car_id"] not in trip_car_ids:
@@ -99,7 +98,6 @@ class MonthlyReportView(LoginRequiredMixin, TemplateView):
                         "total_fuel_cost": r["total_fuel_cost"],
                     })
 
-        # Totals
         totals = {
             "trips_count": sum(s["trips_count"] for s in stats),
             "total_distance_km": sum(int(s["total_distance_km"]) for s in stats),
@@ -113,7 +111,7 @@ class MonthlyReportView(LoginRequiredMixin, TemplateView):
             "selected_car": selected_car,
             "year": year,
             "month": month,
-            "stats": stats,     # <- вече е list от dict
+            "stats": stats,     
             "totals": totals,
         })
         return context

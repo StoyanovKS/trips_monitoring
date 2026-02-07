@@ -20,12 +20,10 @@ class CarStatsAPIView(APIView):
         if not car:
             return Response({"detail": "Not found."}, status=status.HTTP_404_NOT_FOUND)
 
-        # object-level permission check
-        self.check_object_permissions(request, car)
 
+        self.check_object_permissions(request, car)
         trips_qs = Trip.objects.filter(car_id=car_id)
         refuels_qs = Refuel.objects.filter(car_id=car_id)
-
         trips_count = trips_qs.count()
         total_distance_km = trips_qs.aggregate(
             total=Coalesce(Sum(F("end_odometer") - F("start_odometer")), 0)

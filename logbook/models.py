@@ -54,9 +54,6 @@ class Trip(models.Model):
 
     @property
     def distance_km(self) -> int:
-        """
-        Derived distance from odometer values.
-        """
         return max(0, self.end_odometer - self.start_odometer)
 
     def clean(self):
@@ -109,7 +106,6 @@ class Refuel(models.Model):
 
     def clean(self):
         super().clean()
-        # Example validation: keep it simple for now
         if self.station:
             self.station = self.station.strip()
 

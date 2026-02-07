@@ -22,6 +22,7 @@ class UserAdmin(DjangoUserAdmin):
         ("Preferences", {"fields": ("preferred_currency", "timezone")}),
     )
 
+
     add_fieldsets = DjangoUserAdmin.add_fieldsets + (
         ("Preferences", {"fields": ("preferred_currency", "timezone")}),
     )
