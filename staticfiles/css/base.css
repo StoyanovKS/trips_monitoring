@@ -1,30 +1,93 @@
+:root {
+    --footer-h: 56px;   
+}
+
+
+* { box-sizing: border-box; }
+
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
 body {
     font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
+    background: #111;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
+
 
 nav {
     background: #222;
-    padding: 10px;
+    padding: 10px 14px;
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    align-items: center;
+    flex: 0 0 auto;
 }
 
 nav a {
-    color: white;
-    margin-right: 10px;
+    color: #fff;
     text-decoration: none;
+    font-weight: 700;
 }
 
 nav a:hover {
     text-decoration: underline;
 }
 
-main {
-    padding: 20px;
+nav .nav-right {
+    margin-left: auto;
+    display: flex;
+    gap: 12px;
+    align-items: center;
 }
+
+nav button {
+    background: transparent;
+    color: #fff;
+    border: 1px solid #555;
+    padding: 4px 10px;
+    cursor: pointer;
+    font-weight: 700;
+}
+
+
+.page-shell {
+    flex: 1 1 auto;
+    padding-bottom: var(--footer-h);
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-color: #1b1b1b; 
+    display: flex;
+    flex-direction: column;
+}
+
+
+.page-overlay {
+    min-height: 100%;
+    background: rgba(0, 0, 0, 0.10);
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+}
+
+
+.page-content {
+    flex: 1 1 auto;
+    padding: 24px;
+    padding-bottom: calc(var(--footer-h) + 16px);
+    color: #111; 
+}
+
 
 table {
     border-collapse: collapse;
+    background: rgba(255, 255, 255, 0.95);
 }
 
 th, td {
@@ -32,9 +95,44 @@ th, td {
     border: 1px solid #ccc;
 }
 
-footer {
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+
+footer.site-footer {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #222;
+    color: #fff;          
     text-align: center;
-    font-size: 0.9em;
-    color: #666;
-    padding: 10px;
+    padding: 10px 8px;
+    font-weight: 700;
+    z-index: 1000;
+    min-height: var(--footer-h);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+footer.site-footer p {
+    margin: 0;
+}
+
+.quick-link {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 10px;
+    background: rgba(0, 0, 0, 0.12);
+    text-decoration: none;
+    color: inherit;
+    font-weight: 700;
+}
+
+.quick-link:hover {
+    background: rgba(0, 0, 0, 0.20);
+    text-decoration: underline;
 }
