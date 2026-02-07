@@ -1,10 +1,45 @@
 {% extends "base.html" %}
 {% block title %}About{% endblock %}
 {% block content %}
-<h1>About</h1>
-<p>This application is designed to help you monitor and better understand the costs associated with your trips or your firm trips. 
+<h1>About the use of the application</h1>
+<p>This application <strong>Trips Monitoring</strong> is designed to help you monitor and better understand the costs associated with your trips or your firm trips. 
     It allows you to track travel expenses on a regular basis, with a primary focus on fuel consumption and refueling costs. 
     By consistently entering fuel data, you can build a clear history of your trips and spending patterns over time. The application helps you review and analyze these costs, making it easier to identify trends, inefficiencies, or unexpected changes. 
     This ongoing overview supports smarter decisions about budgeting, route planning, and vehicle usage. 
     Ultimately, it turns raw expense entries into meaningful insights about your travel behavior.</p>
+
+
+    <strong>Trips Monitoring</strong> is a personal (and applicable to a small fleet-friendly firms) logbook for tracking car usage and fuel spending.
+    The idea is simple: when trips and refuels are recorded consistently, you can understand real costs and spot patterns.
+</p>
+
+<h2>Designed for clarity</h2>
+<ul>
+    <li><strong>Minimal workflow</strong> – you only enter what matters.</li>
+    <li><strong>Structured data</strong> – cars, trips, refuels and reports are connected.</li>
+    <li><strong>Monthly reporting</strong> – summarized view for quick decisions.</li>
+</ul>
+
+
+<h2>Technology stack used</h2>
+<p>
+- Backend: Python, Django framework.
+ </p>
+ <p>
+- Database: PostgreSQL database.
+</p>
+
+<p>
+- Background Tasking: Celery and Redis.
+</p>
+
+<p>
+- Deployment: Azure App Service.
+</p>
+
+<h2>Privacy & roles</h2>
+<p>
+    Users have access to their own data. Administration (groups/permissions) is controlled by the system admin,
+    keeping the app safe and preventing accidental privilege escalation.
+</p>
 {% endblock %}

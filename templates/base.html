@@ -5,16 +5,20 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %}Logbook{% endblock %}</title>
-    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/base.css' %}?v={% now 'U' %}">
 </head>
 <body>
 
 {% include "partials/_nav.html" %}
 
-<div class="page-shell">
-    <main class="page-content">
-        {% block content %}{% endblock %}
-    </main>
+{% static 'images/logo.jpeg' as bg_url %}
+
+<div class="page-shell" style="background-image: url('{{ bg_url }}');">
+    <div class="page-overlay">
+        <main class="page-content">
+            {% block content %}{% endblock %}
+        </main>
+    </div>
 </div>
 
 {% include "partials/_footer.html" %}
