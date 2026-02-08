@@ -6,15 +6,13 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.dev")
 
 app = Celery("config")
 
-# Read CELERY_* settings from Django settings
+
 app.config_from_object("django.conf:settings", namespace="CELERY")
 
-# Auto-discover tasks.py in installed apps
+
 app.autodiscover_tasks()
 
-# -------------------------
-# Celery Beat (periodic)
-# -------------------------
+
 app.conf.beat_schedule = {
     
     "recalculate-monthly-stats-nightly": {

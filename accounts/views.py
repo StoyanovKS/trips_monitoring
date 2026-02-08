@@ -3,12 +3,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, TemplateView, UpdateView
-
 from .forms import RegisterForm, LoginForm, ProfileEditForm
 
 User = get_user_model()
-
-
 class RegisterView(CreateView):
     template_name = "accounts/register.html"
     form_class = RegisterForm

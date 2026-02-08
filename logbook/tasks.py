@@ -10,10 +10,6 @@ User = get_user_model()
 
 @shared_task
 def send_weekly_summary_email(user_id: int) -> bool:
-    """
-    Sends weekly summary email to a single user.
-    Returns True if attempted.
-    """
     user = User.objects.filter(pk=user_id).first()
     if not user or not user.email:
         return False
@@ -53,10 +49,6 @@ def send_weekly_summary_email(user_id: int) -> bool:
 
 @shared_task
 def send_weekly_summary_for_all_users() -> int:
-    """
-    Weekly job: schedules summary email for all users.
-    Returns how many users were scheduled.
-    """
     user_ids = list(User.objects.exclude(email="").exclude(email__isnull=True).values_list("id", flat=True))
     for uid in user_ids:
         send_weekly_summary_email.delay(uid)

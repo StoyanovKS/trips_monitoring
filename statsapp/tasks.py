@@ -18,8 +18,6 @@ def recalculate_monthly_stats(car_id: int, year: int, month: int) -> int:
     car = Car.objects.filter(pk=car_id).first()
     if not car:
         return 0
-
-    # Filter by month range (DateField)
     start = timezone.datetime(year=year, month=month, day=1).date()
     if month == 12:
         end = timezone.datetime(year=year + 1, month=1, day=1).date()
@@ -59,10 +57,6 @@ def recalculate_monthly_stats(car_id: int, year: int, month: int) -> int:
 
 @shared_task
 def recalculate_all_cars_current_month() -> int:
-    """
-    Nightly job: recalculates stats for all cars for the current month.
-    Returns how many cars were scheduled.
-    """
     today = timezone.localdate()
     year, month = today.year, today.month
 

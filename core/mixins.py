@@ -12,10 +12,6 @@ class OwnerQuerySetMixin(LoginRequiredMixin):
 
 
 class CreatedByQuerySetMixin(LoginRequiredMixin):
-    """
-    Filters queryset by created_by=request.user.
-    Works for models that have 'created_by' FK.
-    """
 
     created_by_field = "created_by"
 

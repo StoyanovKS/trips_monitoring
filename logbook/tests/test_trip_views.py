@@ -35,7 +35,6 @@ class TripViewsTests(TestCase):
         self.client.login(username="owner", password="StrongPass123!")
         resp = self.client.get(reverse("trip-list"))
         self.assertEqual(resp.status_code, 200)
-        # If your TripListView filters by car owner, other user's trip must not be visible
         trips = list(resp.context["object_list"])
         self.assertNotIn(self.trip_other, trips)
 

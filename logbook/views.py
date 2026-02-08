@@ -11,10 +11,6 @@ from .forms import (
 )
 
 
-# -------------------------
-# Trips
-# -------------------------
-
 class TripListView(LoginRequiredMixin, ListView):
     model = Trip
     template_name = "logbook/trip_list.html"
@@ -88,10 +84,6 @@ class TripDeleteView(LoginRequiredMixin, DeleteView):
     def get_queryset(self):
         return super().get_queryset().filter(car__owner=self.request.user)
 
-
-# -------------------------
-# Refuels
-# -------------------------
 
 class RefuelListView(LoginRequiredMixin, ListView):
     model = Refuel

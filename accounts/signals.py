@@ -11,20 +11,14 @@ User = get_user_model()
 
 @receiver(post_migrate)
 def create_groups_and_permissions(sender, **kwargs):
-    """
-    Creates required groups and assigns permissions after migrations.
 
-    This runs after every migrate, but is idempotent:
-    - Groups are created if missing
-    - Permissions are added if missing
-    """
     if sender.name != "accounts":
         return
 
     drivers_group, _ = Group.objects.get_or_create(name="Drivers")
     managers_group, _ = Group.objects.get_or_create(name="Managers")
 
-    # Expand Drivers a bit (still safe because ownership is enforced in views/querysets)
+    
     permission_map = {
         "Drivers": [
             ("garage", "car", ["add", "change", "view"]),
@@ -68,19 +62,15 @@ def create_groups_and_permissions(sender, **kwargs):
 
 @receiver(post_save, sender=User)
 def assign_default_group_and_send_email(sender, instance, created, **kwargs):
-    """
-    On registration:
-    1) Add user to Drivers group by default (prevents 'empty user' with no role).
-    2) Send a welcome email (in dev it goes to console backend).
-    """
     if not created:
         return
 
-    # Default group assignment
+    
     drivers_group, _ = Group.objects.get_or_create(name="Drivers")
     instance.groups.add(drivers_group)
 
-    # Welcome email (only if email is provided)
+    
+
     if instance.email:
         subject = "Welcome to Trips Monitoring"
         message = (
@@ -91,5 +81,5 @@ def assign_default_group_and_send_email(sender, instance, created, **kwargs):
         )
         from_email = getattr(settings, "DEFAULT_FROM_EMAIL", None) or "noreply@example.com"
 
-        # Fail silently so registration never breaks if SMTP isn't configured.
+        
         send_mail(subject, message, from_email, [instance.email], fail_silently=True)

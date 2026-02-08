@@ -5,10 +5,6 @@ register = template.Library()
 
 @register.filter
 def bgn(value):
-    """
-    Formats number as Bulgarian leva:
-    1234.5 -> 1 234.50 лв.
-    """
     try:
         value = float(value)
     except (TypeError, ValueError):
@@ -20,10 +16,6 @@ def bgn(value):
 
 @register.simple_tag(takes_context=True)
 def has_group(context, group_name):
-    """
-    Usage:
-        {% has_group "Managers" as is_manager %}
-    """
     user = context.get("request").user
     if not user or not user.is_authenticated:
         return False
