@@ -80,6 +80,10 @@ class RefuelCreateForm(forms.ModelForm):
         self.user = kwargs.pop("user", None)
         super().__init__(*args, **kwargs)
 
+        # Default currency follows the user's preference when creating a new refuel.
+        if self.user is not None and not self.instance.pk and "currency" in self.fields:
+            self.fields["currency"].initial = getattr(self.user, "preferred_currency", Refuel.CurrencyChoices.BGN)
+
         
         if self.user is not None and "car" in self.fields:
             self.fields["car"].queryset = (
@@ -96,6 +100,8 @@ class RefuelCreateForm(forms.ModelForm):
             self.fields["liters"].label = "Liters"
         if "total_cost" in self.fields:
             self.fields["total_cost"].label = "Total cost"
+        if "currency" in self.fields:
+            self.fields["currency"].label = "Currency"
         if "fuel_type" in self.fields:
             self.fields["fuel_type"].label = "Fuel type (optional)"
         if "station" in self.fields:
@@ -113,6 +119,7 @@ class RefuelCreateForm(forms.ModelForm):
         total_cost = cleaned.get("total_cost")
         odometer = cleaned.get("odometer")
         car = cleaned.get("car")
+        date = cleaned.get("date")
 
         if liters is not None and liters <= 0:
             self.add_error("liters", "Liters must be a positive number.")
@@ -120,15 +127,34 @@ class RefuelCreateForm(forms.ModelForm):
         if total_cost is not None and total_cost <= 0:
             self.add_error("total_cost", "Total cost must be a positive number.")
 
-        if car and odometer is not None:
-            last = (
-                Refuel.objects.filter(car=car)
-                .exclude(pk=self.instance.pk)
+        # Odometer consistency should be checked against refuels around the selected DATE,
+        # not against the latest refuel overall.
+        if car and odometer is not None and date:
+            base_qs = Refuel.objects.filter(car=car).exclude(pk=self.instance.pk)
+
+            prev_refuel = (
+                base_qs.filter(date__lt=date)
                 .order_by("-date", "-created_at")
                 .first()
             )
-            if last and odometer < last.odometer:
-                self.add_error("odometer", f"Odometer must be at least {last.odometer} (last refuel).")
+            next_refuel = (
+                base_qs.filter(date__gt=date)
+                .order_by("date", "created_at")
+                .first()
+            )
+
+            if prev_refuel and odometer < prev_refuel.odometer:
+                self.add_error(
+                    "odometer",
+                    f"Odometer must be at least {prev_refuel.odometer} (previous refuel before this date).",
+                )
+
+            # Optional: keep monotonicity if user inserts an older refuel.
+            if next_refuel and odometer > next_refuel.odometer:
+                self.add_error(
+                    "odometer",
+                    f"Odometer must be at most {next_refuel.odometer} (next refuel after this date).",
+                )
 
         return cleaned
 
@@ -136,7 +162,7 @@ class RefuelCreateForm(forms.ModelForm):
 class RefuelEditForm(RefuelCreateForm):
     class Meta:
         model = Refuel
-        fields = ("car", "date", "odometer", "liters", "total_cost", "fuel_type", "station")
+        fields = ("car", "date", "odometer", "liters", "total_cost", "currency", "fuel_type", "station")
 
 
 class ExpenseCreateForm(forms.ModelForm):

@@ -121,6 +121,27 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
+
+# To enable, set the following environment variables:
+#   AZURE_ACCOUNT_NAME
+#   AZURE_ACCOUNT_KEY
+#   AZURE_MEDIA_CONTAINER (optional, default: "media")
+# ------------------------------------------------------------------------------
+AZURE_ACCOUNT_NAME = os.getenv("AZURE_ACCOUNT_NAME")
+AZURE_ACCOUNT_KEY = os.getenv("AZURE_ACCOUNT_KEY")
+AZURE_MEDIA_CONTAINER = os.getenv("AZURE_MEDIA_CONTAINER", "media")
+
+if AZURE_ACCOUNT_NAME and AZURE_ACCOUNT_KEY:
+    AZURE_CONTAINER = AZURE_MEDIA_CONTAINER
+
+    
+    STORAGES = {
+        "default": {"BACKEND": "storages.backends.azure_storage.AzureStorage"},
+        "staticfiles": {"BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage"},
+    }
+
+    MEDIA_URL = f"https://{AZURE_ACCOUNT_NAME}.blob.core.windows.net/{AZURE_MEDIA_CONTAINER}/"
+
 # ==============================================================================
 # TEMPLATES
 # ==============================================================================

@@ -1,4 +1,3 @@
-
 {% extends "base.html" %}
 {% load core_tags %}
 
@@ -12,7 +11,7 @@
 <p><strong>Odometer:</strong> {{ refuel.odometer }}</p>
 <p><strong>Liters:</strong> {{ refuel.liters }}</p>
 
-<p><strong>Total cost:</strong> {{ refuel.total_cost|bgn }}</p>
+<p><strong>Total cost:</strong> {{ refuel.total_cost|money:refuel.currency }} ({{ refuel.currency }})</p>
 
 {% if refuel.fuel_type %}
     <p><strong>Fuel type:</strong> {{ refuel.fuel_type }}</p>

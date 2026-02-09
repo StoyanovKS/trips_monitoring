@@ -200,6 +200,31 @@ Live application URL:
 https://tripsmonitoring-fcbsc9g5hpbpb4fr.italynorth-01.azurewebsites.net/
 
 
+#### 4.11.1. Required Azure App Settings (Secrets)
+
+The following environment variables must be configured in Azure App Service:
+
+- `DJANGO_SECRET_KEY`
+- `DEBUG` (set to `False` in production)
+- `ALLOWED_HOSTS`
+- `CSRF_TRUSTED_ORIGINS`
+
+#### 4.11.2. Database settings
+- `DB_HOST`
+- `DB_PORT`
+- `DB_NAME`
+- `DB_USER`
+- `DB_PASSWORD`
+
+#### 4.11.3. GitHub Actions Secrets
+
+To enable CI/CD deployment, configure the following repository secrets:
+
+- `AZUREAPPSERVICE_CLIENTID`
+- `AZUREAPPSERVICE_TENANTID`
+- `AZUREAPPSERVICE_SUBSCRIPTIONID`
+
+
 
 
 

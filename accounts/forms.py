@@ -28,6 +28,10 @@ class RegisterForm(UserCreationForm):
 
 
 class LoginForm(AuthenticationForm):
+    error_messages = {
+        "invalid_login": "Wrong profile name or wrong password.",
+        "inactive": "This account is inactive.",
+    }
     
     username = forms.CharField(
         label="User name",

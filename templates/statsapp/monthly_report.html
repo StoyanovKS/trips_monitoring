@@ -41,6 +41,7 @@
             <th>Distance (km)</th>
             <th>Refuels</th>
             <th>Fuel liters</th>
+            <th>Currency</th>
             <th>Fuel cost</th>
         </tr>
     </thead>
@@ -52,7 +53,8 @@
             <td>{{ s.total_distance_km }}</td>
             <td>{{ s.refuels_count }}</td>
             <td>{{ s.total_fuel_liters }}</td>
-            <td>{{ s.total_fuel_cost|bgn }}</td>
+            <td>{{ s.currency }}</td>
+            <td>{{ s.total_fuel_cost|money:s.currency }}</td>
         </tr>
         {% endfor %}
     </tbody>
@@ -64,13 +66,14 @@
             <th>{{ totals.total_distance_km }}</th>
             <th>{{ totals.refuels_count }}</th>
             <th>{{ totals.total_fuel_liters }}</th>
-            <th>{{ totals.total_fuel_cost|bgn }}</th>
+            <th>EUR</th>
+            <th>{{ totals.total_fuel_cost_eur|money:"EUR" }}</th>
         </tr>
     </tfoot>
 </table>
 {% else %}
 <p>No monthly stats found for {{ year }}-{{ month }}.</p>
-<p>Tip: create trips/refuels and run the Celery task to recalculate.</p>
+<p>Tip: create trips/refuels.</p>
 {% endif %}
 
 {% endblock %}

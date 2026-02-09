@@ -67,6 +67,9 @@ class Trip(models.Model):
 
 
 class Refuel(models.Model):
+    class CurrencyChoices(models.TextChoices):
+        BGN = "BGN", "BGN"
+        EUR = "EUR", "EUR"
     car = models.ForeignKey(
         "garage.Car",
         on_delete=models.CASCADE,
@@ -91,6 +94,13 @@ class Refuel(models.Model):
         decimal_places=2,
         validators=[MinValueValidator(0.01)],
         help_text="Total cost in your currency.",
+    )
+
+    currency = models.CharField(
+        max_length=3,
+        choices=CurrencyChoices.choices,
+        default=CurrencyChoices.BGN,
+        help_text="Currency of the total cost.",
     )
 
     fuel_type = models.CharField(max_length=20, blank=True)
