@@ -65,6 +65,10 @@ In the current educational version:
 
 The application uses Celery for asynchronous background processing of monthly statistics. Instead of calculating heavy aggregates on every request, monthly data is precomputed and stored in a dedicated model (MonthlyCarStat).
 
+Fuel cost totals in the monthly report are normalized to EUR using a fixed exchange rate: 1 EUR = 1.95583 BGN.
+
+If refuels are entered in mixed currencies, the report displays separate rows per currency, while the Total row is always shown in EUR.
+
 ### 3.6. Tags
 The project uses **predefined Tags** for:
 - Cars;
@@ -224,7 +228,18 @@ To enable CI/CD deployment, configure the following repository secrets:
 - `AZUREAPPSERVICE_TENANTID`
 - `AZUREAPPSERVICE_SUBSCRIPTIONID`
 
+#### 4.11.4. Media Storage (Azure Blob Storage)
 
+Uploaded car photos (media files) are stored in Azure Blob Storage in production.
+Create a Storage Account and a blob container (e.g. media) and configure the following App Service environment variables:
 
+AZURE_ACCOUNT_NAME (Storage Account name)
 
+AZURE_ACCOUNT_KEY (Access key)
+
+AZURE_MEDIA_CONTAINER (container name, default: media)
+
+Important:
+
+The blob container should allow public read access (anonymous blob access), otherwise images will not render in the browser.
 
